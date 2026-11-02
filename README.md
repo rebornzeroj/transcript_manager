@@ -5,6 +5,8 @@ A private transcript library Site. It accepts transcript text from ChatGPT, stor
 ## Features
 
 - Search transcript titles, bodies, and notes with a plain text scan (no full-text index)
+- Filter by multiple tags alongside text search; results match the text and any selected tag
+- Add and remove tags as individual pills in the transcript editor
 - Sort by newest, oldest, or title
 - Edit transcript text and optional notes, language, source, and tags
 - Copy text or export as Markdown or plain text
@@ -26,9 +28,12 @@ Edit source files, not generated `dist/` output.
 ```sh
 bash scripts/build.sh
 node scripts/validate-artifact.mjs
+npm test
 ```
 
 The generated Worker entrypoint is `dist/server/index.js`. The Sites packaging workflow includes the D1 migration from `drizzle/`.
+
+The search tests use Node's built-in SQLite support to verify tag matching, owner isolation, counts, and filtering before the result limit.
 
 ## Publishing
 
@@ -36,4 +41,4 @@ The live Site is published through OpenAI Sites and currently uses its Sites-man
 
 ## Data
 
-Transcript records are scoped by the authenticated Site user ID. The library uses D1; audio files are not retained. Search uses SQL `LIKE` scans, suitable for the expected small collection (about 2–3 transcripts per week).
+Transcript records are scoped by the authenticated Site user ID. The library uses D1; audio files are not retained. Search uses SQL `LIKE` scans, suitable for the expected small collection (about 2–3 transcripts per week). Tag filters match exact values in the stored JSON array. Tag choices and counts cover the owner's whole library and remain available when text search narrows the results.

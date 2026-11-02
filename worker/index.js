@@ -32,6 +32,31 @@ h1 { font-size: 31px; letter-spacing: -.045em; line-height: 1.15; margin: 7px 0 
 .panel-head h2 { font-size: 16px; letter-spacing: -.02em; margin: 0; }
 .muted { font-size: 12px; color: #7b8279; margin: 3px 0 0; }
 .library-tools { padding: 14px 16px; display: grid; gap: 12px; }
+.library-panel { position: relative; z-index: 1; overflow: visible; }
+.library-panel .panel-head { border-radius: 16px 16px 0 0; }
+.filter-fields { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 8px; }
+.filter-label { display: block; font-size: 12px; font-weight: 650; margin-bottom: 6px; }
+.search-control { min-width: 0; }
+.tag-filter { position: relative; }
+.tag-filter-button { display: flex; align-items: center; gap: 7px; height: 45px; padding: 0 11px; border: 1px solid #b8d0ae; border-radius: 9px; background: #fff; color: #355d2e; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.tag-filter-button svg { width: 16px; height: 16px; flex-shrink: 0; }
+.tag-filter-button:hover { background: #f0f7ec; }
+.tag-filter-button:focus-visible { outline: 2px solid #79a870; outline-offset: 3px; }
+.tag-filter-badge { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 99px; background: #e1efd9; font-size: 11px; }
+.tag-filter-badge[hidden], .tag-filter-menu[hidden], .selected-tag-filters[hidden] { display: none; }
+.tag-filter-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 3; width: min(280px, calc(100vw - 80px)); padding: 10px; background: #fff; border: 1px solid #dce0d7; border-radius: 12px; box-shadow: 0 8px 24px #22301b18; }
+.tag-filter-heading { font-size: 13px; font-weight: 700; margin: 2px 6px; }
+.tag-filter-menu .muted { margin: 2px 6px 9px; }
+.tag-options { max-height: 280px; overflow-y: auto; }
+.tag-option { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 8px 6px; border-radius: 7px; font-size: 13px; cursor: pointer; }
+.tag-option:hover, .tag-option:has(input:checked) { background: #f0f7ec; }
+.tag-option input { width: 16px; height: 16px; margin: 0; flex-shrink: 0; accent-color: #326a3c; }
+.tag-option-name { min-width: 0; overflow-wrap: anywhere; }
+.tag-option-count { margin-left: auto; font-size: 12px; color: #697363; flex-shrink: 0; }
+.tag-filter-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 1px solid #edf0e9; margin-top: 8px; padding-top: 8px; }
+.tag-clear { border: 0; background: transparent; padding: 6px 0; color: #697363; font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.tag-clear:focus-visible { outline: 2px solid #79a870; outline-offset: 2px; }
+.selected-tag-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
 .search { position: relative; }
 .search input, .field input, .field textarea {
   display: block;
@@ -45,14 +70,14 @@ h1 { font-size: 31px; letter-spacing: -.045em; line-height: 1.15; margin: 7px 0 
   background: #fdfdfa;
   color: inherit;
 }
-.search input { padding-left: 39px; }
+.search input { height: 45px; padding-left: 39px; }
 .search span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #7c847a; display: flex; pointer-events: none; }
 .search svg { width: 17px; height: 17px; }
 .search input:focus, .field input:focus, .field textarea:focus { border-color: #79a870; box-shadow: 0 0 0 3px #e7f3e3; }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: #777e75; }
 .toolbar label { display: flex; align-items: center; gap: 6px; }
 .toolbar select { border: 1px solid #e1e4dd; background: white; border-radius: 8px; padding: 7px; font: inherit; color: #555d53; }
-.results { padding: 0 10px 12px; max-height: 660px; overflow: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; }
+.results { padding: 0 10px 12px; max-height: 660px; overflow: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; border-radius: 0 0 16px 16px; }
 .result { min-width: 0; border: 1px solid transparent; border-radius: 11px; padding: 12px; cursor: pointer; }
 .result:hover { background: #fafcf8; border-color: #e7ece3; }
 .result.active { background: #f0f7ec; border-color: #dbe9d5; }
@@ -60,8 +85,10 @@ h1 { font-size: 31px; letter-spacing: -.045em; line-height: 1.15; margin: 7px 0 
 .result-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .result-meta { font-size: 11px; color: #81877f; margin-top: 2px; }
 .snippet { font-size: 12px; color: #5c6459; margin: 7px 0 0; line-height: 1.45; overflow-wrap: anywhere; }
-.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; min-width: 0; }
-.tag { max-width: 100%; font-size: 10px; padding: 2px 7px; border-radius: 99px; background: #edf2e9; color: #566b4f; overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 7px; min-width: 0; }
+.tag { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; font-size: 12px; font-weight: 700; line-height: 1.4; padding: 5px 11px; border: 1px solid #b8d0ae; border-radius: 999px; background: #e1efd9; color: #355d2e; overflow-wrap: anywhere; }
+.result .tag { font-size: 11px; padding: 4px 9px; }
+.tag-name { min-width: 0; overflow-wrap: anywhere; }
 .empty { padding: 32px 14px; text-align: center; color: #81877d; font-size: 13px; }
 .detail { min-height: 660px; }
 .detail-body { padding: 22px; }
@@ -92,6 +119,19 @@ h1 { font-size: 31px; letter-spacing: -.045em; line-height: 1.15; margin: 7px 0 
 .field { min-width: 0; }
 .field label { display: block; font-size: 12px; font-weight: 650; margin: 0 0 5px; }
 .field textarea { min-height: 320px; resize: vertical; }
+.tag-editor { border: 1px solid #dce0d7; border-radius: 9px; padding: 10px; background: #fdfdfa; }
+.tag-editor:focus-within { border-color: #79a870; box-shadow: 0 0 0 3px #e7f3e3; }
+.tag-editor-list { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 9px; }
+.tag-editor-list:empty { display: none; }
+.tag-entry { display: flex; align-items: center; gap: 8px; }
+.tag-entry input { flex: 1; min-width: 0; border: 0; background: transparent; padding: 7px 2px; }
+.tag-entry input:focus { box-shadow: none; }
+.tag-entry .btn { flex-shrink: 0; }
+.tag-remove { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 24px; width: 24px; height: 24px; padding: 0; margin: -3px -5px -3px 0; border: 0; border-radius: 50%; background: transparent; color: inherit; font: inherit; font-size: 19px; cursor: pointer; }
+.tag-remove:hover { background: #c7dfbb; }
+.tag-remove:focus-visible { outline: 2px solid #326a3c; outline-offset: 1px; }
+.tag-status { font-size: 12px; color: #a8443e; margin-top: 5px; }
+.tag-status:empty { display: none; }
 .form-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
 .status { font-size: 12px; color: #326a3c; overflow-wrap: anywhere; }
 .confirm { margin-top: 18px; padding: 13px; border-radius: 10px; background: #fff5f3; border: 1px solid #f1d9d5; font-size: 13px; overflow-wrap: anywhere; }
@@ -118,18 +158,50 @@ h1 { font-size: 31px; letter-spacing: -.045em; line-height: 1.15; margin: 7px 0 
   .detail-title { font-size: 21px; }
   .meta-grid { grid-template-columns: minmax(0, 1fr); }
   .field input, .field textarea, .search input { font-size: 16px; }
+  .filter-fields { grid-template-columns: minmax(0, 1fr); gap: 11px; }
+  .search input, .tag-filter-button { height: 46px; }
+  .tag-filter-button { width: 100%; }
+  .tag-filter-button > svg:last-child { margin-left: auto; }
+  .tag-filter-menu { width: 100%; }
+  .tag-option { min-height: 44px; }
 }
 </style></head><body>
 <header class="top"><div class="mark">T</div><div class="brand">Transcript Library</div><div class="private">Private · only you can access this library</div><button class="btn primary" id="new-transcript">+ New transcript</button></header>
 <main class="shell"><div class="intro"><div><div class="eyebrow">Your words, easy to find</div><h1>Transcript Library</h1><p class="sub">Search, revisit, and refine transcripts saved from your conversations.</p></div><div class="total" id="total">Loading library…</div></div>
-<div class="layout"><section class="panel"><div class="panel-head"><h2>All transcripts</h2><p class="muted">Search titles and full text</p></div><div class="library-tools"><div class="search"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg></span><input id="search" type="search" placeholder="Search transcript text…" aria-label="Search transcripts"></div><div class="toolbar"><span id="result-count">Loading…</span><label>Sort <select id="sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select></label></div></div><div id="results" class="results"></div></section>
+<div class="layout"><section class="panel library-panel">
+  <div class="panel-head"><h2>All transcripts</h2><p class="muted">Search by text and filter by tag</p></div>
+  <div class="library-tools">
+    <div class="filter-fields">
+      <div class="search-control">
+        <label class="filter-label" for="search">Search text</label>
+        <div class="search"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg></span><input id="search" type="search" placeholder="Search transcripts…"></div>
+      </div>
+      <div class="tag-filter" id="tag-filter">
+        <span class="filter-label" id="tag-filter-label">Tags</span>
+        <button class="tag-filter-button" id="tag-filter-button" type="button" aria-label="Choose tags" aria-expanded="false" aria-controls="tag-filter-menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13 13 20a2 2 0 0 1-3 0L3 13V3h10l7 7a2 2 0 0 1 0 3Z"></path><circle cx="7.5" cy="7.5" r="1"></circle></svg>
+          <span>Tags</span><span class="tag-filter-badge" id="tag-filter-count" aria-hidden="true" hidden>0</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div class="tag-filter-menu" id="tag-filter-menu" role="region" aria-labelledby="tag-filter-label" hidden>
+          <div class="tag-filter-heading">Filter by tag</div><p class="muted">Match any selected tag</p>
+          <div class="tag-options" id="tag-options"></div>
+          <div class="tag-filter-footer"><button class="tag-clear" id="clear-menu-tags" type="button">Clear tags</button><button class="btn primary" id="done-tags" type="button">Done</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="selected-tag-filters" id="selected-tag-filters" aria-label="Selected tag filters" hidden></div>
+    <div class="toolbar"><span id="result-count" role="status">Loading…</span><label>Sort <select id="sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select></label></div>
+  </div>
+  <div id="results" class="results"></div>
+</section>
 <section class="panel detail"><div id="detail"></div></section></div><div class="foot">Audio transcription happens in ChatGPT. Text and optional details are stored in your private Site database.</div></main>
 <script>
-const $=s=>document.querySelector(s),results=$('#results'),detail=$('#detail'),search=$('#search'),sort=$('#sort');let entries=[],selected=null,timer;
+const $=s=>document.querySelector(s),results=$('#results'),detail=$('#detail'),search=$('#search'),sort=$('#sort');let entries=[],selected=null,timer,tagCatalog=[],libraryTotal=0,catalogLoaded=false,loadVersion=0,tagOptionSignature="";const selectedTags=new Set();
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function preview(text,q){if(!q)return text.slice(0,130)+(text.length>130?'…':'');const i=text.toLocaleLowerCase().indexOf(q.toLocaleLowerCase());if(i<0)return text.slice(0,130)+(text.length>130?'…':'');const a=Math.max(0,i-45),b=Math.min(text.length,i+q.length+80);return(a?'…':'')+text.slice(a,b)+(b<text.length?'…':'')}
 function ordered(){const a=[...entries];if(sort.value==='oldest')a.sort((x,y)=>x.createdAt.localeCompare(y.createdAt));else if(sort.value==='title')a.sort((x,y)=>x.title.localeCompare(y.title));else a.sort((x,y)=>y.createdAt.localeCompare(x.createdAt));return a}
-function renderList(){const a=ordered();$('#total').textContent=entries.length+' '+(entries.length===1?'transcript':'transcripts');$('#result-count').textContent=a.length+' '+(a.length===1?'result':'results');if(!a.length){results.innerHTML='<div class="empty">No transcripts found.<br>Try another search or add one from ChatGPT.</div>';renderDetail();return}results.innerHTML=a.map(e=>'<article class="result '+(e.id===selected?'active':'')+'" data-id="'+esc(e.id)+'"><div class="result-title">'+esc(e.title)+'</div><div class="result-meta">'+new Date(e.createdAt).toLocaleDateString()+' · '+e.text.length.toLocaleString()+' characters</div><p class="snippet">'+esc(preview(e.text,search.value.trim()))+'</p>'+(e.tags?.length?'<div class="tags">'+e.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>':'')+'</article>').join('');results.querySelectorAll('.result').forEach(el=>el.onclick=()=>{selected=el.dataset.id;renderList();renderDetail()})}
+function renderList(){const a=ordered();$('#total').textContent=libraryTotal+' '+(libraryTotal===1?'transcript':'transcripts');$('#result-count').textContent=a.length+' '+(a.length===1?'result':'results');if(!a.length){results.innerHTML='<div class="empty">No transcripts found.<br>'+(search.value.trim()||selectedTags.size?'Try another search or change your tags.<br><button class="tag-clear" type="button" id="clear-filters">Clear filters</button>':'Add a transcript to start your library.')+'</div>';if($('#clear-filters'))$('#clear-filters').onclick=clearFilters;renderDetail();return}results.innerHTML=a.map(e=>'<article class="result '+(e.id===selected?'active':'')+'" data-id="'+esc(e.id)+'"><div class="result-title">'+esc(e.title)+'</div><div class="result-meta">'+new Date(e.createdAt).toLocaleDateString()+' · '+e.text.length.toLocaleString()+' characters</div><p class="snippet">'+esc(preview(e.text,search.value.trim()))+'</p>'+(e.tags?.length?'<div class="tags">'+e.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>':'')+'</article>').join('');results.querySelectorAll('.result').forEach(el=>el.onclick=()=>{selected=el.dataset.id;renderList();renderDetail()})}
 function renderDetail(){const e=entries.find(x=>x.id===selected);if(!e){detail.innerHTML='<div class="empty" style="padding:95px 24px"><div style="font-size:22px;color:#53644e;margin-bottom:7px">Choose a transcript</div>Select a result to read, edit, copy, or export it.</div>';return}const q=search.value.trim();detail.innerHTML='<div class="detail-body"><div class="detail-top"><div><h2 class="detail-title">'+esc(e.title)+'</h2><div class="meta-line">Added '+new Date(e.createdAt).toLocaleString()+(e.updatedAt&&e.updatedAt!==e.createdAt?' · Edited '+new Date(e.updatedAt).toLocaleString():'')+'</div></div><div class="actions"><button class="btn" id="edit">Edit</button><button class="btn" id="copy">Copy</button><button class="btn" id="txt">Export .txt</button><button class="btn" id="md">Export .md</button><button class="btn danger" id="delete">Delete</button></div></div><div class="meta-grid"><div class="meta-box"><div class="meta-label">Language</div><div class="meta-value">'+esc(e.language||'Not specified')+'</div></div><div class="meta-box"><div class="meta-label">Source</div><div class="meta-value">'+esc(e.source||'ChatGPT')+'</div></div><div class="meta-box wide"><div class="meta-label">Tags</div><div class="tags">'+(e.tags?.length?e.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join(''):'<span class="muted">No tags</span>')+'</div></div></div>'+(e.notes?'<div class="section-label">Notes</div><div class="notes">'+esc(e.notes)+'</div>':'')+'<div class="section-label">Transcript</div><div class="transcript" id="transcript-body">'+(q?highlight(e.text,q):esc(e.text))+'</div><div id="confirm"></div></div>';
 $('#edit').onclick=()=>editForm(e);$('#copy').onclick=async()=>{await navigator.clipboard.writeText(e.text);flash('Transcript copied.')};$('#txt').onclick=()=>download(e.title+'.txt',e.text);$('#md').onclick=()=>download(e.title+'.md','# '+e.title+'\\n\\n'+e.text);$('#delete').onclick=()=>{$('#confirm').innerHTML='<div class="confirm"><p>Delete “'+esc(e.title)+'” permanently?</p><div class="confirm-actions"><button class="btn danger" id="yes-delete">Delete transcript</button><button class="btn" id="no-delete">Cancel</button></div></div>';$('#yes-delete').onclick=()=>remove(e.id);$('#no-delete').onclick=()=>$('#confirm').replaceChildren()};}
 function highlight(s,q){
@@ -143,13 +215,101 @@ function highlight(s,q){
   }
   return out+esc(s.slice(from));
 }
-function editForm(e){detail.innerHTML='<div class="detail-body"><div class="detail-top editor-heading"><div><h2 class="detail-title">'+(e?'Edit transcript':'New transcript')+'</h2><div class="meta-line">Keep notes, language, source, and tags optional.</div></div><button class="btn" id="cancel">Cancel</button></div><form class="form" id="edit-form"><div class="field"><label for="f-title">Title</label><input id="f-title" required maxlength="160" value="'+esc(e?.title||'')+'" placeholder="e.g. Author interview"></div><div class="field"><label for="f-text">Transcript</label><textarea id="f-text" required maxlength="200000" placeholder="Paste transcript text…">'+esc(e?.text||'')+'</textarea></div><div class="field"><label for="f-notes">Notes</label><textarea id="f-notes" style="min-height:72px" placeholder="Optional context or follow-up…">'+esc(e?.notes||'')+'</textarea></div><div class="meta-grid" style="margin:0"><div class="field"><label for="f-language">Language</label><input id="f-language" value="'+esc(e?.language||'')+'" placeholder="e.g. Chinese, Japanese"></div><div class="field"><label for="f-source">Source</label><input id="f-source" value="'+esc(e?.source||'')+'" placeholder="e.g. ChatGPT audio transcription"></div></div><div class="field"><label for="f-tags">Tags</label><input id="f-tags" value="'+esc((e?.tags||[]).join(', '))+'" placeholder="interview, rights meeting, project"></div><div class="form-footer"><span class="status" id="save-status"></span><button class="btn primary" type="submit">Save transcript</button></div></form></div>';
-$('#cancel').onclick=()=>renderDetail();$('#edit-form').onsubmit=async ev=>{ev.preventDefault();const data={title:$('#f-title').value,text:$('#f-text').value,notes:$('#f-notes').value,language:$('#f-language').value,source:$('#f-source').value,tags:$('#f-tags').value.split(',').map(x=>x.trim()).filter(Boolean)};const status=$('#save-status');status.textContent='Saving…';try{const url=e?'/api/transcripts/'+encodeURIComponent(e.id):'/api/transcripts';const r=await fetch(url,{method:e?'PATCH':'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}),d=await r.json();if(!r.ok)throw Error(d.error||'Could not save');selected=d.id;await load();flash('Transcript saved.')}catch(err){status.textContent=err.message}};}
+function editForm(e){detail.innerHTML='<div class="detail-body"><div class="detail-top editor-heading"><div><h2 class="detail-title">'+(e?'Edit transcript':'New transcript')+'</h2><div class="meta-line">Keep notes, language, source, and tags optional.</div></div><button class="btn" id="cancel">Cancel</button></div><form class="form" id="edit-form"><div class="field"><label for="f-title">Title</label><input id="f-title" required maxlength="160" value="'+esc(e?.title||'')+'" placeholder="e.g. Author interview"></div><div class="field"><label for="f-text">Transcript</label><textarea id="f-text" required maxlength="200000" placeholder="Paste transcript text…">'+esc(e?.text||'')+'</textarea></div><div class="field"><label for="f-notes">Notes</label><textarea id="f-notes" style="min-height:72px" placeholder="Optional context or follow-up…">'+esc(e?.notes||'')+'</textarea></div><div class="meta-grid" style="margin:0"><div class="field"><label for="f-language">Language</label><input id="f-language" value="'+esc(e?.language||'')+'" placeholder="e.g. Chinese, Japanese"></div><div class="field"><label for="f-source">Source</label><input id="f-source" value="'+esc(e?.source||'')+'" placeholder="e.g. ChatGPT audio transcription"></div></div><div class="field"><label for="f-tag-input">Tags</label><div class="tag-editor"><div class="tag-editor-list" id="f-tag-list" role="list" aria-label="Selected tags"></div><div class="tag-entry"><input id="f-tag-input" maxlength="50" autocomplete="off" placeholder="Add a tag…" aria-describedby="f-tag-hint f-tag-status"><button class="btn" type="button" id="add-tag">Add</button></div></div><p class="muted" id="f-tag-hint">Press Enter or Add to create a tag.</p><div class="tag-status" id="f-tag-status" role="status"></div></div><div class="form-footer"><span class="status" id="save-status"></span><button class="btn primary" type="submit">Save transcript</button></div></form></div>';
+const tagEditor=createTagEditor(e?.tags||[]);$('#cancel').onclick=()=>renderDetail();$('#edit-form').onsubmit=async ev=>{ev.preventDefault();if(!tagEditor.add())return;const data={title:$('#f-title').value,text:$('#f-text').value,notes:$('#f-notes').value,language:$('#f-language').value,source:$('#f-source').value,tags:tagEditor.values()};const status=$('#save-status');status.textContent='Saving…';try{const url=e?'/api/transcripts/'+encodeURIComponent(e.id):'/api/transcripts';const r=await fetch(url,{method:e?'PATCH':'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}),d=await r.json();if(!r.ok)throw Error(d.error||'Could not save');selected=d.id;await load();flash('Transcript saved.')}catch(err){status.textContent=err.message}};}
+function createTagEditor(initial){
+  const tags=[...new Set(initial)],list=$('#f-tag-list'),input=$('#f-tag-input'),status=$('#f-tag-status');
+  function render(){
+    list.innerHTML=tags.map((tag,index)=>'<span class="tag" role="listitem"><span class="tag-name">'+esc(tag)+'</span><button class="tag-remove" type="button" data-tag-index="'+index+'" aria-label="'+esc('Remove tag: '+tag)+'"><span aria-hidden="true">×</span></button></span>').join('');
+  }
+  function add(){
+    const tag=input.value.trim();
+    if(!tag)return true;
+    if(tags.includes(tag)){status.textContent='That tag is already added.';input.value='';return true;}
+    if(tags.length>=30){status.textContent='You can add up to 30 tags.';return false;}
+    tags.push(tag);input.value='';status.textContent='';render();return true;
+  }
+  $('#add-tag').onclick=()=>{add();input.focus();};
+  input.onkeydown=event=>{if(event.key==='Enter'&&!event.isComposing){event.preventDefault();add();}};
+  input.oninput=()=>{status.textContent='';};
+  list.onclick=event=>{
+    const button=event.target.closest('[data-tag-index]');
+    if(!button)return;
+    tags.splice(Number(button.dataset.tagIndex),1);status.textContent='';render();input.focus();
+  };
+  render();
+  return{add,values:()=>[...tags]};
+}
 async function remove(id){try{const r=await fetch('/api/transcripts/'+encodeURIComponent(id),{method:'DELETE'});if(!r.ok)throw Error('Could not delete transcript.');selected=null;await load();flash('Transcript deleted.')}catch(e){flash(e.message)}}
 function download(name,content){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:'text/plain;charset=utf-8'}));a.download=name.replace(/[\\/:*?"<>|]/g,'_');a.click();URL.revokeObjectURL(a.href)}
 function flash(message){let el=$('#flash');if(!el){el=document.createElement('div');el.id='flash';el.className='status';detail.querySelector('.detail-body')?.append(el)}el.textContent=message;setTimeout(()=>el.remove(),2200)}
-async function load(){try{const p=new URLSearchParams();if(search.value.trim())p.set('q',search.value.trim());const r=await fetch('/api/transcripts?'+p);if(!r.ok)throw Error('Could not load library.');entries=await r.json();if(!entries.some(e=>e.id===selected))selected=entries[0]?.id||null;renderList();renderDetail()}catch{results.innerHTML='<div class="empty">Could not load transcripts. Refresh the page to try again.</div>'}}
-search.oninput=()=>{clearTimeout(timer);timer=setTimeout(load,180)};sort.onchange=renderList;$('#new-transcript').onclick=()=>editForm(null);load();
+function renderTagFilter(){
+  const options=$('#tag-options'),trigger=$('#tag-filter-button'),chips=$('#selected-tag-filters');
+  const available=[...tagCatalog];
+  for(const name of selectedTags)if(!available.some(tag=>tag.name===name))available.push({name,count:0});
+  available.sort((a,b)=>a.name.localeCompare(b.name));
+  const signature=JSON.stringify({loaded:catalogLoaded,tags:available});
+  if(signature!==tagOptionSignature){
+    const focused=options.contains(document.activeElement)?document.activeElement.value:null;
+    options.innerHTML=available.length?available.map(tag=>'<label class="tag-option"><input type="checkbox" value="'+esc(tag.name)+'"><span class="tag-option-name">'+esc(tag.name)+'</span><span class="tag-option-count">'+tag.count+'</span></label>').join(''):'<div class="empty">'+(catalogLoaded?'No tags yet. Add tags to a transcript to filter your library.':'Loading tags…')+'</div>';
+    tagOptionSignature=signature;
+    if(focused!==null){const next=[...options.querySelectorAll('input')].find(input=>input.value===focused);(next||trigger).focus({preventScroll:true});}
+  }
+  options.querySelectorAll('input').forEach(input=>{input.checked=selectedTags.has(input.value);});
+  $('#tag-filter-count').textContent=selectedTags.size;
+  $('#tag-filter-count').hidden=!selectedTags.size;
+  trigger.setAttribute('aria-label','Choose tags'+(selectedTags.size?', '+selectedTags.size+' selected':''));
+  chips.hidden=!selectedTags.size;
+  chips.innerHTML=[...selectedTags].map((name,index)=>'<span class="tag"><span class="tag-name">'+esc(name)+'</span><button class="tag-remove" type="button" data-filter-index="'+index+'" aria-label="'+esc('Remove '+name+' filter')+'"><span aria-hidden="true">×</span></button></span>').join('')+(selectedTags.size?'<button class="tag-clear" type="button" data-clear-tags>Clear tags</button>':'');
+}
+function setTagMenu(open,restoreFocus=false){
+  $('#tag-filter-menu').hidden=!open;
+  $('#tag-filter-button').setAttribute('aria-expanded',String(open));
+  if(open)$('#tag-options input')?.focus();
+  else if(restoreFocus)$('#tag-filter-button').focus();
+}
+function applyTagFilters(){clearTimeout(timer);renderTagFilter();load();}
+function clearFilters(){search.value='';selectedTags.clear();applyTagFilters();}
+async function load(){
+  const version=++loadVersion,p=new URLSearchParams();
+  if(search.value.trim())p.set('q',search.value.trim());
+  for(const tag of selectedTags)p.append('tag',tag);
+  $('#result-count').textContent='Loading…';
+  try{
+    const [transcriptResponse,tagResponse]=await Promise.all([fetch('/api/transcripts?'+p),fetch('/api/tags')]);
+    if(!transcriptResponse.ok||!tagResponse.ok)throw Error('Could not load library.');
+    const [nextEntries,catalog]=await Promise.all([transcriptResponse.json(),tagResponse.json()]);
+    if(version!==loadVersion)return;
+    entries=nextEntries;tagCatalog=catalog.tags;libraryTotal=catalog.total;catalogLoaded=true;
+    if(!entries.some(entry=>entry.id===selected))selected=entries[0]?.id||null;
+    renderTagFilter();renderList();renderDetail();
+  }catch{
+    if(version!==loadVersion)return;
+    $('#result-count').textContent='Could not load library';
+    results.innerHTML='<div class="empty">Could not load transcripts. Refresh the page to try again.</div>';
+  }
+}
+$('#tag-filter-button').onclick=()=>setTagMenu($('#tag-filter-menu').hidden);
+$('#done-tags').onclick=()=>setTagMenu(false,true);
+$('#clear-menu-tags').onclick=()=>{selectedTags.clear();applyTagFilters();};
+$('#tag-options').onchange=event=>{
+  if(!event.target.matches('input[type="checkbox"]'))return;
+  if(event.target.checked)selectedTags.add(event.target.value);else selectedTags.delete(event.target.value);
+  applyTagFilters();
+};
+$('#selected-tag-filters').onclick=event=>{
+  const button=event.target.closest('button');if(!button)return;
+  if(button.hasAttribute('data-clear-tags'))selectedTags.clear();
+  else if(button.hasAttribute('data-filter-index'))selectedTags.delete([...selectedTags][Number(button.dataset.filterIndex)]);
+  applyTagFilters();$('#tag-filter-button').focus();
+};
+document.addEventListener('click',event=>{if(!$('#tag-filter').contains(event.target))setTagMenu(false);});
+document.addEventListener('focusin',event=>{if(!$('#tag-filter-menu').hidden&&!$('#tag-filter').contains(event.target))setTagMenu(false);});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('#tag-filter-menu').hidden){event.preventDefault();setTagMenu(false,true);}});
+search.oninput=()=>{clearTimeout(timer);loadVersion++;timer=setTimeout(load,180);};
+sort.onchange=renderList;
+$('#new-transcript').onclick=()=>editForm(null);
+renderTagFilter();load();
 </script></body></html>`;
 
 const headers = {"content-type":"application/json; charset=utf-8", "cache-control":"no-store"};
@@ -161,9 +321,32 @@ function cleanOptional(value,max=5000){return typeof value === "string"?value.tr
 function cleanTags(value){if(Array.isArray(value))return [...new Set(value.map(v=>cleanOptional(v,50)).filter(Boolean))].slice(0,30);if(typeof value==="string")return cleanTags(value.split(","));return[];}
 function db(env){if(!env.DB)throw Error("Site database is not configured yet.");return env.DB;}
 function decodeRow(row){return{...row,tags:JSON.parse(row.tags||"[]"),notes:row.notes||"",language:row.language||"",source:row.source||""};}
-async function readAll(env,user,q=""){const pattern=`%${q.replace(/[\^%_]/g,"^$&")}%`;const sql=q?"SELECT id,title,body AS text,notes,language,source,tags,created_at AS createdAt,updated_at AS updatedAt FROM transcripts WHERE user_id=? AND (title LIKE ? ESCAPE '^' OR body LIKE ? ESCAPE '^' OR notes LIKE ? ESCAPE '^') ORDER BY created_at DESC LIMIT 500":"SELECT id,title,body AS text,notes,language,source,tags,created_at AS createdAt,updated_at AS updatedAt FROM transcripts WHERE user_id=? ORDER BY created_at DESC LIMIT 500";const result=q?await db(env).prepare(sql).bind(user,pattern,pattern,pattern).all():await db(env).prepare(sql).bind(user).all();return(result.results||[]).map(decodeRow);}
+async function readAll(env,user,q="",tags=[]){
+  const conditions=["user_id=?"],values=[user];
+  if(q){
+    const pattern=`%${q.replace(/[\^%_]/g,"^$&")}%`;
+    conditions.push("(title LIKE ? ESCAPE '^' OR body LIKE ? ESCAPE '^' OR notes LIKE ? ESCAPE '^')");
+    values.push(pattern,pattern,pattern);
+  }
+  const selected=[...new Set(tags.filter(tag=>tag!==""))];
+  if(selected.length){
+    conditions.push("EXISTS (SELECT 1 FROM json_each(transcripts.tags) AS stored_tag WHERE stored_tag.type='text' AND stored_tag.value IN (SELECT value FROM json_each(?)))");
+    values.push(JSON.stringify(selected));
+  }
+  const sql="SELECT id,title,body AS text,notes,language,source,tags,created_at AS createdAt,updated_at AS updatedAt FROM transcripts WHERE "+conditions.join(" AND ")+" ORDER BY created_at DESC LIMIT 500";
+  const result=await db(env).prepare(sql).bind(...values).all();
+  return(result.results||[]).map(decodeRow);
+}
+async function readTagCatalog(env,user){
+  const database=db(env);
+  const [tagResult,totalResult]=await database.batch([
+    database.prepare("SELECT tag.value AS name, COUNT(DISTINCT transcripts.id) AS count FROM transcripts JOIN json_each(transcripts.tags) AS tag WHERE transcripts.user_id=? AND tag.type='text' AND tag.value<>'' GROUP BY tag.value ORDER BY tag.value COLLATE NOCASE, tag.value").bind(user),
+    database.prepare("SELECT COUNT(*) AS total FROM transcripts WHERE user_id=?").bind(user)
+  ]);
+  return{tags:tagResult.results||[],total:totalResult.results?.[0]?.total||0};
+}
 async function save(env,user,title,text,extra={}){title=cleanTitle(title);text=cleanText(text);if(!title||!text)throw Error("Both title and transcript text are required.");const id=crypto.randomUUID(),now=new Date().toISOString(),notes=cleanOptional(extra.notes),language=cleanOptional(extra.language,100),source=cleanOptional(extra.source,160),tags=JSON.stringify(cleanTags(extra.tags));await db(env).prepare("INSERT INTO transcripts (id,user_id,title,body,notes,language,source,tags,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)").bind(id,user,title,text,notes,language,source,tags,now,now).run();return{id,title,text,notes,language,source,tags:JSON.parse(tags),createdAt:now,updatedAt:now};}
 async function update(env,user,id,data){const title=cleanTitle(data.title),text=cleanText(data.text);if(!title||!text)throw Error("Both title and transcript text are required.");const now=new Date().toISOString(),notes=cleanOptional(data.notes),language=cleanOptional(data.language,100),source=cleanOptional(data.source,160),tags=JSON.stringify(cleanTags(data.tags));const result=await db(env).prepare("UPDATE transcripts SET title=?,body=?,notes=?,language=?,source=?,tags=?,updated_at=? WHERE id=? AND user_id=?").bind(title,text,notes,language,source,tags,now,id,user).run();if(!result.meta?.changes)throw Error("Transcript not found.");const rows=await db(env).prepare("SELECT id,title,body AS text,notes,language,source,tags,created_at AS createdAt,updated_at AS updatedAt FROM transcripts WHERE id=? AND user_id=?").bind(id,user).all();return decodeRow(rows.results[0]);}
 async function handleMcp(request,env){let body;try{body=await request.json()}catch{return fail("Invalid JSON-RPC request.")};const id=body.id??null;const reply=(result)=>Response.json({jsonrpc:"2.0",id,result},{headers});if(body.method==="server/discover")return reply({supportedVersions:["2026-07-28"],capabilities:{tools:{}}});if(body.method==="initialize")return reply({protocolVersion:"2026-07-28",capabilities:{tools:{}},serverInfo:{name:"transcript-inbox",version:"1.1.0"}});if(body.method==="notifications/initialized")return new Response(null,{status:202});if(body.method==="tools/list")return reply({tools:[{name:"save_transcript",description:"Save a transcript to the signed-in user's private Transcript Library. Optionally include notes, language, source, and tags.",inputSchema:{type:"object",properties:{title:{type:"string",description:"A short descriptive title."},text:{type:"string",description:"Full transcript text."},notes:{type:"string"},language:{type:"string"},source:{type:"string"},tags:{type:"array",items:{type:"string"}}},required:["title","text"],additionalProperties:false}}]});if(body.method==="tools/call"){const name=body.params?.name,args=body.params?.arguments||{};if(name!=="save_transcript")return Response.json({jsonrpc:"2.0",id,error:{code:-32601,message:"Unknown tool."}},{status:404,headers});try{const saved=await save(env,identity(request),args.title,args.text,args);return reply({content:[{type:"text",text:JSON.stringify({saved:true,id:saved.id,title:saved.title,createdAt:saved.createdAt})}],structuredContent:{saved:true,id:saved.id,title:saved.title,createdAt:saved.createdAt}})}catch(e){return reply({content:[{type:"text",text:e.message}],isError:true})}}return Response.json({jsonrpc:"2.0",id,error:{code:-32601,message:"Method not found."}},{status:404,headers});}
 
-export default {async fetch(request,env){const url=new URL(request.url),path=url.pathname;if(path==="/mcp"&&request.method==="POST")return handleMcp(request,env);if(path==="/api/transcripts"){const user=identity(request);if(request.method==="GET"){try{return Response.json(await readAll(env,user,url.searchParams.get("q")||""),{headers})}catch(e){return fail(e.message,500)}}if(request.method==="POST"){try{const body=await request.json();const record=await save(env,user,body.title,body.text,body);return Response.json(record,{status:201,headers})}catch(e){return fail(e.message)}}return new Response("Method not allowed",{status:405,headers:{allow:"GET, POST"}})}if(path.startsWith("/api/transcripts/")){const user=identity(request),id=decodeURIComponent(path.slice("/api/transcripts/".length));try{if(request.method==="PATCH"){const body=await request.json();return Response.json(await update(env,user,id,body),{headers})}if(request.method==="DELETE"){const result=await db(env).prepare("DELETE FROM transcripts WHERE id=? AND user_id=?").bind(id,user).run();if(!result.meta?.changes)return fail("Transcript not found.",404);return Response.json({deleted:true},{headers})}return new Response("Method not allowed",{status:405,headers:{allow:"PATCH, DELETE"}})}catch(e){return fail(e.message,e.message==="Transcript not found."?404:400)}}if(path!=="/")return new Response("Not found",{status:404});return new Response(page,{headers:{"content-type":"text/html; charset=utf-8"}})}};
+export default {async fetch(request,env){const url=new URL(request.url),path=url.pathname;if(path==="/mcp"&&request.method==="POST")return handleMcp(request,env);if(path==="/api/tags"){if(request.method!=="GET")return new Response("Method not allowed",{status:405,headers:{allow:"GET"}});try{return Response.json(await readTagCatalog(env,identity(request)),{headers})}catch(e){return fail(e.message,500)}}if(path==="/api/transcripts"){const user=identity(request);if(request.method==="GET"){try{return Response.json(await readAll(env,user,url.searchParams.get("q")||"",url.searchParams.getAll("tag")),{headers})}catch(e){return fail(e.message,500)}}if(request.method==="POST"){try{const body=await request.json();const record=await save(env,user,body.title,body.text,body);return Response.json(record,{status:201,headers})}catch(e){return fail(e.message)}}return new Response("Method not allowed",{status:405,headers:{allow:"GET, POST"}})}if(path.startsWith("/api/transcripts/")){const user=identity(request),id=decodeURIComponent(path.slice("/api/transcripts/".length));try{if(request.method==="PATCH"){const body=await request.json();return Response.json(await update(env,user,id,body),{headers})}if(request.method==="DELETE"){const result=await db(env).prepare("DELETE FROM transcripts WHERE id=? AND user_id=?").bind(id,user).run();if(!result.meta?.changes)return fail("Transcript not found.",404);return Response.json({deleted:true},{headers})}return new Response("Method not allowed",{status:405,headers:{allow:"PATCH, DELETE"}})}catch(e){return fail(e.message,e.message==="Transcript not found."?404:400)}}if(path!=="/")return new Response("Not found",{status:404});return new Response(page,{headers:{"content-type":"text/html; charset=utf-8"}})}};
